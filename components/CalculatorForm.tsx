@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import type { FormData, FormErrors, DeckShape } from '../types';
 import { WOOD_TYPES, BOARD_SIZES, JOIST_SPACINGS, DECK_SHAPES } from '../constants';
@@ -25,7 +26,6 @@ const calculatePreviewArea = (data: FormData): number => {
 
     switch (data.deckShape) {
         case 'rectangle': return length * width;
-        case 'square': return side * side;
         case 'octagon': return 2 * (1 + Math.sqrt(2)) * Math.pow(side, 2);
         case 'hexagon': return (3 * Math.sqrt(3) / 2) * Math.pow(side, 2);
         default: return 0;
@@ -65,7 +65,7 @@ export function CalculatorForm({ formData, setFormData, errors, onCalculate, isL
             deckShape: shape,
             lengthFeet: shape === 'rectangle' ? prev.lengthFeet || '20' : '',
             widthFeet: shape === 'rectangle' ? prev.widthFeet || '16' : '',
-            sideLength: (shape === 'square' || shape === 'octagon' || shape === 'hexagon') ? prev.sideLength || '8' : '',
+            sideLength: (shape === 'octagon' || shape === 'hexagon') ? prev.sideLength || '8' : '',
             diameter: '',
         }));
     };
@@ -79,7 +79,6 @@ export function CalculatorForm({ formData, setFormData, errors, onCalculate, isL
                         <Input label="Width (ft)" name="widthFeet" type="number" value={formData.widthFeet} onChange={handleChange} placeholder="e.g., 16" error={errors.widthFeet} />
                     </div>
                 );
-            case 'square':
             case 'octagon':
             case 'hexagon':
                 return <Input label="Side Length (ft)" name="sideLength" type="number" value={formData.sideLength} onChange={handleChange} placeholder="e.g., 8" error={errors.sideLength} />;
@@ -92,17 +91,20 @@ export function CalculatorForm({ formData, setFormData, errors, onCalculate, isL
         <Card>
             <form onSubmit={(e) => { e.preventDefault(); onCalculate(); }} className="space-y-8">
                 <FormSection number={1} title="Choose Your Deck Shape">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        {DECK_SHAPES.map(({ id, name, icon: Icon }) => (
+                    <div className="grid grid-cols-3 gap-3">
+                        {DECK_SHAPES.map(({ id, name, icon: Icon, image: Image }) => (
                             <button
                                 key={id}
                                 type="button"
                                 onClick={() => handleShapeChange(id)}
-                                className={`flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all duration-200 aspect-square ${formData.deckShape === id ? 'bg-primary-50 border-primary-500 shadow-md' : 'bg-white border-slate-300 hover:border-primary-400 hover:bg-primary-50/50'}`}
+                                className={`group relative flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all duration-300 aspect-square overflow-hidden ${formData.deckShape === id ? 'bg-primary-50 border-primary-500 shadow-md' : 'bg-white border-slate-300 hover:border-primary-400 hover:bg-primary-50/50 hover:shadow-lg hover:-translate-y-1'}`}
                                 aria-label={`Select ${name} deck shape`}
                             >
-                                <Icon className="h-8 w-8 sm:h-10 sm:w-10 text-primary-700" />
-                                <span className="mt-2 text-xs font-medium text-slate-700">{name}</span>
+                                <Image className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                <div className="relative z-10 flex flex-col items-center justify-center transition-opacity duration-300 group-hover:opacity-0">
+                                    <Icon className="h-8 w-8 sm:h-10 sm:w-10 text-primary-700" />
+                                    <span className="mt-2 text-xs font-medium text-slate-700">{name}</span>
+                                </div>
                             </button>
                         ))}
                     </div>

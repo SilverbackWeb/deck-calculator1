@@ -1,12 +1,12 @@
 export type WoodTypeId = 'pressureTreated' | 'composite' | 'pvc' | 'exotic';
 export type BoardSizeId = '1x4' | '1x6' | '2x6' | '2x8';
-export type DeckShape = 'rectangle' | 'square' | 'octagon' | 'hexagon';
+export type DeckShape = 'rectangle' | 'octagon' | 'hexagon';
 
 export interface FormData {
     deckShape: DeckShape;
     lengthFeet: string;
     widthFeet: string;
-    sideLength: string; // For octagon/hexagon/square
+    sideLength: string; // For octagon/hexagon
     diameter: string; // No longer used
     boardSize: BoardSizeId;
     joistSpacing: 12 | 16 | 24;
@@ -38,7 +38,6 @@ export interface CalculationResults {
         decking: number;
         labor: number;
         substructure: number;
-        railing: number;
     };
     woodType: WoodType;
 }

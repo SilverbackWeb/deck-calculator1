@@ -1,6 +1,7 @@
+
 import React, { useState, useCallback } from 'react';
 import type { FormData, CalculationResults, FormErrors, DeckShape } from './types';
-import { WOOD_TYPES, BOARD_SIZES, COST_BREAKDOWN_PERCENTAGES } from './constants';
+import { WOOD_TYPES, BOARD_SIZES, PRICING_MODEL } from './constants';
 import { CalculatorForm } from './components/CalculatorForm';
 import { ResultsDisplay } from './components/ResultsDisplay';
 
@@ -20,8 +21,6 @@ const calculateArea = (shape: DeckShape, length: number, width: number, side: nu
     switch (shape) {
         case 'rectangle':
             return length * width;
-        case 'square':
-            return side * side;
         case 'octagon':
             return 2 * (1 + Math.sqrt(2)) * Math.pow(side, 2);
         case 'hexagon':
@@ -46,7 +45,6 @@ export default function App() {
                 if (!lengthFeet || parseFloat(lengthFeet) <= 0) newErrors.lengthFeet = 'Enter a positive number.';
                 if (!widthFeet || parseFloat(widthFeet) <= 0) newErrors.widthFeet = 'Enter a positive number.';
                 break;
-            case 'square':
             case 'octagon':
             case 'hexagon':
                 if (!sideLength || parseFloat(sideLength) <= 0) newErrors.sideLength = 'Enter a positive number.';
@@ -92,12 +90,12 @@ export default function App() {
             const screwsPerSqFt = 3.5;
             const totalScrews = Math.ceil(totalSqFt * screwsPerSqFt);
             
+            // New "Bottom-Up" Cost Calculation
             const deckingMaterialCost = totalSqFt * selectedWood.costPerSqFt;
-            const totalCost = deckingMaterialCost / COST_BREAKDOWN_PERCENTAGES.decking;
-
-            const laborCost = totalCost * COST_BREAKDOWN_PERCENTAGES.labor;
-            const substructureCost = totalCost * COST_BREAKDOWN_PERCENTAGES.substructure;
-            const railingCost = totalCost * COST_BREAKDOWN_PERCENTAGES.railing;
+            const laborCost = totalSqFt * PRICING_MODEL.laborPerSqFt;
+            const substructureCost = totalSqFt * PRICING_MODEL.substructurePerSqFt;
+            
+            const totalCost = deckingMaterialCost + laborCost + substructureCost;
             
             setResults({
                 totalSqFt,
@@ -110,7 +108,6 @@ export default function App() {
                     decking: deckingMaterialCost,
                     labor: laborCost,
                     substructure: substructureCost,
-                    railing: railingCost,
                 },
                 woodType: selectedWood,
             });
@@ -153,7 +150,7 @@ export default function App() {
                 </div>
 
                 <footer className="text-center mt-12 text-sm text-slate-500">
-                    <p>&copy; {new Date().getFullYear()} Deck Masters Inc. All rights reserved.</p>
+                    <p>&copy; 2025 silverbackweb. All rights reserved.</p>
                     <p className="mt-1">Estimates are for planning purposes only. Consult a professional for accurate quotes.</p>
                 </footer>
             </div>
