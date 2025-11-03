@@ -16,12 +16,12 @@ const initialState: FormData = {
     woodType: 'pressureTreated',
 };
 
-const calculateArea = (shape: DeckShape, length: number, width: number, side: number, diameter: number): number => {
+const calculateArea = (shape: DeckShape, length: number, width: number, side: number): number => {
     switch (shape) {
         case 'rectangle':
             return length * width;
-        case 'circle':
-            return Math.PI * Math.pow(diameter / 2, 2);
+        case 'square':
+            return side * side;
         case 'octagon':
             return 2 * (1 + Math.sqrt(2)) * Math.pow(side, 2);
         case 'hexagon':
@@ -39,16 +39,14 @@ export default function App() {
 
     const validateForm = useCallback(() => {
         const newErrors: FormErrors = {};
-        const { deckShape, lengthFeet, widthFeet, sideLength, diameter } = formData;
+        const { deckShape, lengthFeet, widthFeet, sideLength } = formData;
 
         switch (deckShape) {
             case 'rectangle':
                 if (!lengthFeet || parseFloat(lengthFeet) <= 0) newErrors.lengthFeet = 'Enter a positive number.';
                 if (!widthFeet || parseFloat(widthFeet) <= 0) newErrors.widthFeet = 'Enter a positive number.';
                 break;
-            case 'circle':
-                if (!diameter || parseFloat(diameter) <= 0) newErrors.diameter = 'Enter a positive number.';
-                break;
+            case 'square':
             case 'octagon':
             case 'hexagon':
                 if (!sideLength || parseFloat(sideLength) <= 0) newErrors.sideLength = 'Enter a positive number.';
@@ -65,14 +63,13 @@ export default function App() {
         setIsLoading(true);
 
         setTimeout(() => { // Simulate calculation delay for loading spinner
-            const { deckShape, lengthFeet, widthFeet, sideLength, diameter, boardSize, deckingAngle, woodType } = formData;
+            const { deckShape, lengthFeet, widthFeet, sideLength, boardSize, deckingAngle, woodType } = formData;
 
             const totalSqFt = calculateArea(
                 deckShape,
                 parseFloat(lengthFeet),
                 parseFloat(widthFeet),
-                parseFloat(sideLength),
-                parseFloat(diameter)
+                parseFloat(sideLength)
             );
 
             const selectedBoard = BOARD_SIZES.find(b => b.id === boardSize);

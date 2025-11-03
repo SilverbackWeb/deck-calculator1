@@ -20,13 +20,12 @@ const calculatePreviewArea = (data: FormData): number => {
     const length = parseFloat(data.lengthFeet) || 0;
     const width = parseFloat(data.widthFeet) || 0;
     const side = parseFloat(data.sideLength) || 0;
-    const diameter = parseFloat(data.diameter) || 0;
 
-    if (length < 0 || width < 0 || side < 0 || diameter < 0) return 0;
+    if (length < 0 || width < 0 || side < 0) return 0;
 
     switch (data.deckShape) {
         case 'rectangle': return length * width;
-        case 'circle': return Math.PI * Math.pow(diameter / 2, 2);
+        case 'square': return side * side;
         case 'octagon': return 2 * (1 + Math.sqrt(2)) * Math.pow(side, 2);
         case 'hexagon': return (3 * Math.sqrt(3) / 2) * Math.pow(side, 2);
         default: return 0;
@@ -66,8 +65,8 @@ export function CalculatorForm({ formData, setFormData, errors, onCalculate, isL
             deckShape: shape,
             lengthFeet: shape === 'rectangle' ? prev.lengthFeet || '20' : '',
             widthFeet: shape === 'rectangle' ? prev.widthFeet || '16' : '',
-            sideLength: (shape === 'octagon' || shape === 'hexagon') ? prev.sideLength || '8' : '',
-            diameter: shape === 'circle' ? prev.diameter || '16' : '',
+            sideLength: (shape === 'square' || shape === 'octagon' || shape === 'hexagon') ? prev.sideLength || '8' : '',
+            diameter: '',
         }));
     };
     
@@ -80,8 +79,7 @@ export function CalculatorForm({ formData, setFormData, errors, onCalculate, isL
                         <Input label="Width (ft)" name="widthFeet" type="number" value={formData.widthFeet} onChange={handleChange} placeholder="e.g., 16" error={errors.widthFeet} />
                     </div>
                 );
-            case 'circle':
-                return <Input label="Diameter (ft)" name="diameter" type="number" value={formData.diameter} onChange={handleChange} placeholder="e.g., 16" error={errors.diameter} />;
+            case 'square':
             case 'octagon':
             case 'hexagon':
                 return <Input label="Side Length (ft)" name="sideLength" type="number" value={formData.sideLength} onChange={handleChange} placeholder="e.g., 8" error={errors.sideLength} />;
@@ -104,7 +102,7 @@ export function CalculatorForm({ formData, setFormData, errors, onCalculate, isL
                                 aria-label={`Select ${name} deck shape`}
                             >
                                 <Icon className="h-8 w-8 sm:h-10 sm:w-10 text-primary-700" />
-                                <span className="mt-2 text-xs sm:text-sm font-medium text-slate-700">{name}</span>
+                                <span className="mt-2 text-xs font-medium text-slate-700">{name}</span>
                             </button>
                         ))}
                     </div>

@@ -1,7 +1,7 @@
 // FIX: Import React to resolve 'Cannot find namespace 'React'' error.
 import React from 'react';
 import type { WoodType, BoardSize, DeckShape } from './types';
-import { RectangleIcon, CircleIcon, OctagonIcon, HexagonIcon } from './components/icons/DeckShapes';
+import { RectangleIcon, SquareIcon, OctagonIcon, HexagonIcon } from './components/icons/DeckShapes';
 
 export const WOOD_TYPES: WoodType[] = [
     { id: 'pressureTreated', name: 'Pressure-Treated Pine', costPerSqFt: 3, maintenance: 'High' },
@@ -34,7 +34,7 @@ interface DeckShapeInfo {
 
 export const DECK_SHAPES: DeckShapeInfo[] = [
     { id: 'rectangle', name: 'Rectangle', icon: RectangleIcon },
-    { id: 'circle', name: 'Circle', icon: CircleIcon },
+    { id: 'square', name: 'Square', icon: SquareIcon },
     { id: 'octagon', name: 'Octagon', icon: OctagonIcon },
     { id: 'hexagon', name: 'Hexagon', icon: HexagonIcon },
 ];
