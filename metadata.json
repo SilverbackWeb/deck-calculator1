@@ -1,0 +1,5 @@
+{
+  "name": "Deck Building Calculator",
+  "description": "An interactive calculator to help users estimate the materials and costs for building a deck. It calculates the number of boards, screws, fasteners, and provides a detailed cost breakdown based on user-provided dimensions and material choices.",
+  "requestFramePermissions": []
+}
