@@ -1,10 +1,9 @@
 
 import React from 'react';
-import type { CalculationResults, WoodType } from '../types';
+import type { CalculationResults } from '../types';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
-import { RefreshCw, HardHat, Ruler, Drill, Info, Layers, Wrench, DollarSign } from 'lucide-react';
-import { CostPieChart } from './CostPieChart';
+import { RefreshCw, HardHat, Ruler, Drill, Info } from 'lucide-react';
 
 interface ResultsDisplayProps {
     results: CalculationResults | null;
@@ -31,32 +30,6 @@ const ResultRow: React.FC<{ icon: React.ReactNode; label: string; value: string;
     </div>
 );
 
-// FIX: Pass woodType as a prop to correctly display the material name in the tooltip.
-const CostBreakdown: React.FC<{ cost: CalculationResults['cost'], woodType: WoodType }> = ({ cost, woodType }) => {
-    const costData = [
-        { name: 'Decking', value: cost.decking, fill: '#4f46e5' },
-        { name: 'Substructure', value: cost.substructure, fill: '#818cf8' },
-        { name: 'Labor', value: cost.labor, fill: '#a5b4fc' },
-    ];
-    
-    return (
-        <div className="mt-8">
-            <h4 className="font-semibold text-lg text-slate-800 mb-2">Cost Breakdown</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                <div className="bg-white rounded-lg border border-slate-200 px-4">
-                    <ResultRow icon={<Layers size={20} />} label="Decking Materials" value={formatCurrency(cost.decking)} tooltip={`Based on your selection of ${woodType.name}.`} />
-                    <ResultRow icon={<Ruler size={20} />} label="Substructure" value={formatCurrency(cost.substructure)} tooltip="Includes framing, posts, concrete, and hardware." />
-                    <ResultRow icon={<Wrench size={20} />} label="Labor" value={formatCurrency(cost.labor)} tooltip="Estimated cost for professional installation." />
-                </div>
-                 <div className="hidden md:block">
-                     <CostPieChart data={costData} />
-                 </div>
-            </div>
-        </div>
-    );
-};
-
-
 export function ResultsDisplay({ results, onReset }: ResultsDisplayProps) {
     if (!results) {
         return (
@@ -70,7 +43,7 @@ export function ResultsDisplay({ results, onReset }: ResultsDisplayProps) {
         );
     }
     
-    const { totalSqFt, finalLinearFeet, totalScrews, wasteFactor, cost, woodType } = results;
+    const { totalSqFt, finalLinearFeet, totalScrews, wasteFactor, cost } = results;
     
     return (
         <Card>
@@ -97,8 +70,6 @@ export function ResultsDisplay({ results, onReset }: ResultsDisplayProps) {
                     <ResultRow icon={<Drill size={20} />} label="Screws" value={`~${totalScrews.toLocaleString()}`} tooltip="Approx. 3.5 screws per square foot for standard installation." />
                 </div>
             </div>
-
-            <CostBreakdown cost={cost} woodType={woodType} />
         </Card>
     );
 }
